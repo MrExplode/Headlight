@@ -3,17 +3,16 @@ package me.mrexplode.headlight;
 import java.awt.EventQueue;
 
 import ch.bildspur.artnet.ArtNetClient;
-import ch.bildspur.artnet.DmxUniverseConfig;
 
 public class Main {
     
     public static void main(String[] args) {
-        //EventQueue.invokeLater(() -> {
-        //    MainGUI gui = new MainGUI();
-        //    gui.setVisible(true);
-        //});
+        EventQueue.invokeLater(() -> {
+            MainGUI gui = new MainGUI();
+            gui.setVisible(true);
+        });
         
-        artnet();
+        //artnet();
     }
 
     
@@ -26,29 +25,29 @@ public class Main {
         
         System.out.println("Starting artnet...");
         byte[] dmxData = new byte[512];
-        dmxData[9] = 0;
         
+        int value = 0;
         long time = 0;
         boolean var1 = true;
         while (true) {
-            if (System.currentTimeMillis() > time + 100) {
+            if (System.currentTimeMillis() > time + 1) {
                 time = System.currentTimeMillis();
                 
-                if (dmxData[9] < 255 && var1 == true) {
-                    dmxData[9]++;
+                dmxData = artnet.readDmxData(0, 1);
+                if (value < 255 && var1 == true) {
+                    value++;
                 } else {
                     var1 = false;
-                    if (dmxData[9] > 0) {
-                        dmxData[9]--;
+                    if (value > 0) {
+                        value--;
                     } else {
                         var1 = true;
                     }
                 }
-                //System.out.println("Broadcasting dmx value " + dmxData[9]);
-                
-                DmxUniverseConfig conf = new DmxUniverseConfig();
-                //artnet.broadcastDmx(0, 1, dmxData);
-                artnet.readDmxData(0, 1);
+                System.out.println("Broadcasting dmx value " + value);
+                dmxData[2] = (byte) 255;
+                dmxData[6] = (byte) value;
+                artnet.broadcastDmx(0, 11, dmxData);
             }
         }
     }

@@ -63,7 +63,6 @@ public class ArtDmxPacket extends ArtNetPacket {
     public boolean parse(byte[] raw) {
         setData(raw);
         sequenceID = data.getInt8(12);
-        System.out.println(sequenceID);
         int subnetUniverse = data.getInt8(14);
         subnetID = subnetUniverse >> 4;
         universeID = subnetUniverse & 0x0f;
