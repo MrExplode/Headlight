@@ -28,6 +28,8 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 public class MainGUI extends JFrame {
@@ -86,11 +88,35 @@ public class MainGUI extends JFrame {
         );
         
         arenaWidth = new JTextField();
+        arenaWidth.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                ((Arena) arena).widthTooltip = true;
+                ((Arena) arena).repaint();
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                ((Arena) arena).widthTooltip = false;
+                ((Arena) arena).repaint();
+            }
+        });
         arenaWidth.setColumns(10);
         
         lblArenaWidth = new JLabel("Arena width:");
         
         arenaLength = new JTextField();
+        arenaLength.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                ((Arena) arena).lengthTooltip = true;
+                ((Arena) arena).repaint();
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                ((Arena) arena).lengthTooltip = false;
+                ((Arena) arena).repaint();
+            }
+        });
         arenaLength.setColumns(10);
         
         lblArenaLength = new JLabel("Arena length:");
@@ -120,10 +146,10 @@ public class MainGUI extends JFrame {
         
         btnNewButton = new JButton("New button");
         btnNewButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 Arena a = (Arena) arena;
-                Fixture f = new Fixture(5, 6, 10, a.rMetricX, a.rMetricY);
-                f.size = 10000;
+                Fixture f = new Fixture(10, 6, 10, 100, a.rMetricX, a.rMetricY);
                 a.addFixture(f);
                 System.out.println("metricX: " + a.rMetricX);
                 System.out.println("metricY: " + a.rMetricY);

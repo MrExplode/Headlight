@@ -15,6 +15,9 @@ public class Arena extends JPanel {
     public double rMetricX = 0;
     public double rMetricY = 0;
     
+    public boolean widthTooltip = false;
+    public boolean lengthTooltip = false;
+    
     private double IWidth;
     private double ILength;
     
@@ -34,8 +37,8 @@ public class Arena extends JPanel {
     public void addFixture(Fixture f) {
         fixtures.add(f);
         this.add(f);
-        f.setVisible(true);
         this.repaint();
+        f.setVisible(true);
     }
 
     public double getIWidth() {
@@ -71,6 +74,18 @@ public class Arena extends JPanel {
         rMetricY = segment2;
         for (int i = 0; i < ILength; i++) {
             g.drawLine(0, (int) (i * segment2), this.getWidth(), (int) (i * segment2));
+        }
+        
+        if (widthTooltip) {
+            g.setColor(Color.RED);
+            g.drawLine(0, this.getHeight() / 20 * 5, this.getWidth(), this.getHeight() / 20 * 5);
+            g.drawString("Width", this.getWidth() / 20 * 5, this.getHeight() / 20 * 5);
+        }
+        
+        if (lengthTooltip) {
+            g.setColor(Color.RED);
+            g.drawLine(this.getWidth() / 20 * 3, 0, this.getWidth() / 20 * 3, this.getHeight());
+            g.drawString("Length", this.getWidth() / 20 * 4, this.getHeight() / 20 * 3);
         }
     }
 
