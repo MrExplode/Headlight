@@ -46,22 +46,20 @@ public class Fixture extends JPanel {
      */
     public int size;
     
-    public Fixture(double rX, double rY, double rZ, double rMetricX, double rMetricY) {
+    public Fixture(double rX, double rY, double rZ, int size, double rMetricX, double rMetricY) {
         this.setOpaque(false);
         this.rX = rX;
         this.rY = rY;
         this.rZ = rZ;
+        this.size = size;
         this.rMetricX = rMetricX;
         this.rMetricY = rMetricY;
-        this.setBounds(i(tX(rX) - size/2), i(tY(rY) - size/2), size, size);
-        //this.setBounds(60, 60, 20, 20);
     }
     
     @Override
     public void paintComponent(Graphics g) {
         System.out.println("paint: " + this.getX() + " " + this.getY() + " w: " + this.getWidth() + " h " + this.getHeight());
         g.setColor(Color.BLUE);
-        g.fillRect(i(tX(rX) - ((rMetricX / 100 * size) / 2)), i(tY(rY) - ((rMetricY / 100 * size) / 2)), i(rMetricX / 100 * size), i(rMetricY / 100 * size));
     }
     
     private double tX(double irlValue) {
