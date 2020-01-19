@@ -32,6 +32,7 @@ public class ArtTimePacket extends ArtNetPacket {
         minutes = data.getInt8(16);
         hours = data.getInt8(17);
         type = data.getInt8(18);
+        encoded = encode(hours, minutes, seconds, frames, type);
         return true;
     }
     
@@ -75,14 +76,18 @@ public class ArtTimePacket extends ArtNetPacket {
         int framerate = 30;
         switch (frameType) {
             case 0:
+            	//film
                 framerate = 24;
                 break;
             case 1:
+            	//ebu
                 framerate = 25;
                 break;
             case 2:
+            	//df
                 throw new IllegalArgumentException("DF type not implemented! Do you wanna implement it yourself?");
             case 3:
+            	//smtpe
                 framerate = 30;
                 break;
             default:
@@ -94,7 +99,6 @@ public class ArtTimePacket extends ArtNetPacket {
         int min_fr = min * 60 * framerate;
         int sec_fr = sec * framerate;
         
-        System.out.println("encoder: " + (hour_fr + min_fr + sec_fr + frame));
         return hour_fr + min_fr + sec_fr + frame;
     }
     
@@ -141,7 +145,7 @@ public class ArtTimePacket extends ArtNetPacket {
         
         int sec = ((int) frames / framerate);
         frames = frames - (sec * framerate);
-        dec[2] = min;
+        dec[2] = sec;
         
         int frame = (int) frames;
         dec[3] = frame;
@@ -172,7 +176,7 @@ public class ArtTimePacket extends ArtNetPacket {
 
     
     public void setSeconds(int seconds) {
-        this.seconds = seconds & 0x0f;
+        this.seconds = seconds;
         this.encoded = encode(hours, minutes, this.seconds, frames, type);
         updateData();
     }
@@ -186,7 +190,7 @@ public class ArtTimePacket extends ArtNetPacket {
 
     
     public void setMinutes(int minutes) {
-        this.minutes = minutes & 0x0f;
+        this.minutes = minutes;
         this.encoded = encode(hours, this.minutes, seconds, frames, type);
         updateData();
     }
@@ -200,7 +204,7 @@ public class ArtTimePacket extends ArtNetPacket {
 
     
     public void setHours(int hours) {
-        this.hours = hours & 0x0f;
+        this.hours = hours;
         this.encoded = encode(this.hours, minutes, seconds, frames, type);
         updateData();
     }
@@ -218,7 +222,7 @@ public class ArtTimePacket extends ArtNetPacket {
      * @param type the frame type
      */
     public void setFrameType(int type) {
-        this.type = type & 0x0f;
+        this.type = type;
         this.encoded = encode(hours, minutes, seconds, frames, this.type);
         updateData();
     }

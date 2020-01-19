@@ -32,29 +32,28 @@ public class Main {
         timePacket.setFrames(0);
         timePacket.setFrameType(1);
         byte[] data = timePacket.getData();
+        System.out.println("hour: " + timePacket.getHours());
+        System.out.println("Minutes: " + timePacket.getMinutes());
+        System.out.println("Seconds: " + timePacket.getSeconds());
+        System.out.println("Frames: " + timePacket.getFrames());
+        System.out.println("first: " + 19 + " second: " + (19 & 0x03));
         
         long time = System.currentTimeMillis();
         long time2 = 0;
         long time3 = 0;
         boolean running = true;
         
-        DatagramSocket socket = new DatagramSocket(null);
-        socket.setReuseAddress(true);
-        socket.setBroadcast(true);
-        socket.bind(new InetSocketAddress(socket.getLocalAddress(), 42070));
         while (running) {
             //incrementing time
             if (System.currentTimeMillis() > time2 + 40) {
                 time2 = System.currentTimeMillis();
                 timePacket.increment();
-                //server.broadcastPacket(timePacket);
-                DatagramPacket packet = new DatagramPacket(timePacket.getData(), timePacket.getLength(), InetAddress.getByName("255.255.255.255"), 42070);
-                socket.send(packet);
+                server.broadcastPacket(timePacket);
             }
             
             if (System.currentTimeMillis() > time3 + 1000) {
                 time3 = System.currentTimeMillis();
-                System.out.println("time: " + (timePacket.getHours() & 0x0f) + "h " + (timePacket.getMinutes() & 0x0f) + "m " + (timePacket.getSeconds() & 0x0f) + "s " + (timePacket.getFrames() & 0x0f) + "f  " + timePacket.encoded);
+                System.out.println("time: " + timePacket.getHours() + "h " + timePacket.getMinutes() + "m " + timePacket.getSeconds() + "s " + timePacket.getFrames() + "f  " + timePacket.encoded);
             }
             
             //1 min shutdown
