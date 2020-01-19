@@ -152,6 +152,15 @@ public class ArtTimePacket extends ArtNetPacket {
         
         return dec;
     }
+    
+    public void setTime(int hour, int min, int sec, int frame) {
+    	this.hours = hour;
+    	this.minutes = min;
+    	this.seconds = sec;
+    	this.frames = frame;
+    	this.encoded = encode(hours, minutes, seconds, frames, type);
+    	updateData();
+    }
 
     /**
      * @return the number of frames

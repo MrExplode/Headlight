@@ -1,20 +1,20 @@
 package me.mrexplode.headlight;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import ch.bildspur.artnet.ArtNetClient;
 import ch.bildspur.artnet.ArtNetException;
 import ch.bildspur.artnet.ArtNetServer;
+import ch.bildspur.artnet.packets.ArtNetPacket;
 import ch.bildspur.artnet.packets.ArtTimePacket;
-import me.mrexplode.consolestarter.ConsoleStarter;
 
 public class Main {
     
-    public static void main(String[] args) throws IOException, ArtNetException {
+    public static void main(String[] args) throws IOException, ArtNetException, InterruptedException {
         //new ConsoleStarter("headlight").start();
         /*
         EventQueue.invokeLater(() -> {
@@ -27,8 +27,8 @@ public class Main {
         
         ArtTimePacket timePacket = new ArtTimePacket();
         timePacket.setHours(0);
-        timePacket.setMinutes(19);
-        timePacket.setSeconds(10);
+        timePacket.setMinutes(0);
+        timePacket.setSeconds(0);
         timePacket.setFrames(0);
         timePacket.setFrameType(1);
         byte[] data = timePacket.getData();
@@ -36,34 +36,51 @@ public class Main {
         System.out.println("Minutes: " + timePacket.getMinutes());
         System.out.println("Seconds: " + timePacket.getSeconds());
         System.out.println("Frames: " + timePacket.getFrames());
-        System.out.println("first: " + 19 + " second: " + (19 & 0x03));
         
+        
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        TimecodeTask timecodeTask = new TimecodeTask();
+        timecodeTask.init();
+        executor.scheduleAtFixedRate(timecodeTask, 0, 40, TimeUnit.MILLISECONDS);
+        
+        /*
         long time = System.currentTimeMillis();
-        long time2 = 0;
+        long incTime = 0;
         long time3 = 0;
         boolean running = true;
         
+        
+        double val = 0;
         while (running) {
-            //incrementing time
-            if (System.currentTimeMillis() > time2 + 40) {
-                time2 = System.currentTimeMillis();
-                timePacket.increment();
-                server.broadcastPacket(timePacket);
-            }
+        	//increment packet time
+        	//val = System.nanoTime() / 40000000;
+        	if (System.nanoTime() >= incTime + 40000000) {
+        		incTime = System.nanoTime();
+        		timePacket.increment();
+        	}
+        	
+        	if (System.currentTimeMillis() > time3 + 40) {
+        		server.broadcastPacket(timePacket);
+        	}
             
+        	//logger
             if (System.currentTimeMillis() > time3 + 1000) {
                 time3 = System.currentTimeMillis();
                 System.out.println("time: " + timePacket.getHours() + "h " + timePacket.getMinutes() + "m " + timePacket.getSeconds() + "s " + timePacket.getFrames() + "f  " + timePacket.encoded);
             }
             
-            //1 min shutdown
-            if (System.currentTimeMillis() > time + 1000 * 60) {
+            //2 min shutdown
+            if (System.currentTimeMillis() > time + 1000 * 120) {
                 running = false;
             }
         }
-        
+        */
         server.stop();
         //artnet();
+    }
+    
+    public static void send(ArtNetPacket packet, ArtNetServer server) {
+    	server.broadcastPacket(packet);
     }
 
     
